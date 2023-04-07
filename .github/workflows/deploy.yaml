@@ -1,0 +1,56 @@
+name: Deploy to K8s
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout files
+        uses: actions/checkout@v2
+
+      - uses: mr-smithers-excellent/docker-build-push@v4
+        name: Build and push Docker image
+        with:
+          image: huydnt1801/my-app
+          registry: ghcr.io
+          dockerfile: Dockerfile
+          username: ${{ github.actor }}
+          password: ${{ secrets.PAT }}
+  deploy:
+    name: deploy
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout files
+      uses: actions/checkout@v2
+
+    - name: Set context from Kubeconfig
+      uses: azure/k8s-set-context@v1
+      with:
+        method: kubeconfig
+        kubeconfig: ${{ secrets.KUBECONFIG }}
+        context: huytest
+      id: setcontext
+
+    - name: Get tag name
+      uses: olegtarasov/get-tag@v2.1.2
+
+    - name: Get new Image
+      id: image
+      run: |
+        echo "::set-output name=image::ghcr.io/huydnt1801/my-app:$GIT_TAG_NAME"
+
+    - name: Deploy to K8s
+      uses: Azure/k8s-deploy@v1
+      with:
+        manifests: |
+          demo.yaml
+        images: |
+          ${{ steps.image.outputs.image}}
