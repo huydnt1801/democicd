@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: build
+    name: build and push Docker image
     runs-on: ubuntu-latest
 
     steps:
@@ -22,35 +22,36 @@ jobs:
           dockerfile: Dockerfile
           username: ${{ github.actor }}
           password: ${{ secrets.PAT }}
+
   deploy:
     name: deploy
     needs: [build]
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout files
-      uses: actions/checkout@v2
+      - name: Checkout files
+        uses: actions/checkout@v2
 
-    - name: Set context from Kubeconfig
-      uses: azure/k8s-set-context@v1
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.KUBECONFIG }}
-        context: huytest
-      id: setcontext
+      - name: Set context from Kubeconfig
+        uses: azure/k8s-set-context@v1
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          context: huytest
+        id: setcontext
 
-    - name: Get tag name
-      uses: olegtarasov/get-tag@v2.1.2
+      - name: Get tag name
+        uses: olegtarasov/get-tag@v2.1.2
 
-    - name: Get new Image
-      id: image
-      run: |
-        echo "::set-output name=image::ghcr.io/huydnt1801/my-app:$GIT_TAG_NAME"
+      - name: Get new Image
+        id: image
+        run: |
+          echo "::set-output name=image::ghcr.io/huydnt1801/my-app:$GIT_TAG_NAME"
 
-    - name: Deploy to K8s
-      uses: Azure/k8s-deploy@v1
-      with:
-        manifests: |
-          demo.yaml
-        images: |
-          ${{ steps.image.outputs.image}}
+      - name: Deploy to K8s
+        uses: Azure/k8s-deploy@v1
+        with:
+          manifests: |
+            demo.yaml
+          images: |
+            ${{ steps.image.outputs.image}}
