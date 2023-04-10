@@ -11,7 +11,11 @@ xem các image:\
 chạy image:\
 `docker run -p port_local:port_container id/tên_image`\
 xem các container đang chạy:\
-`docker ps`
+`docker ps`\
+push image lên docker hub. lưu ý: để đẩy được image lên hub, bạn cần đặt tên image theo chuẩn sau: tên_tk_hub_của_bạn/tên_image:tag\
+bạn cần đăng nhập trước: `docker login`\
+đẩy lên hub: `docker push tên_image:tag`\
+tham khảo: https://viblo.asia/p/su-dung-docker-push-de-publish-mot-image-len-docker-hub-L4x5xgYblBM
 
 # Kubernetes
 
@@ -23,13 +27,14 @@ chaỵ minikube:\
 `minikube start`\
 chuyển context:\
 `kubectl config use-context tên_context`\
+khi bạn dùng minikube làm cluster thì tên*context là `minikube`\  
 kiểm tra pods ở namespace default:\
 `kubectl get pods`\
-thêm -n tên*namespace để lấy ở namespace khác\
+thêm -n tên_namespace để lấy thông tin ở namespace khác\
 xem thay đổi liên tục của pod trên namespace default:\
 `watch kubectl get pods -n default`\
 apply config mới:\
-`kubectl apply -f địa_chỉ*đến_file`\
+`kubectl apply -f địa_chỉ*đến_file_manifest`\
 xóa 1 pod:\
 `kubectl delete -n default pod tên_pod`\
 xóa hết ở namespace default:\

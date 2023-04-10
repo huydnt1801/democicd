@@ -17,7 +17,7 @@ spec:
 
       livenessProbe:
         httpGet:
-          path: /not-found
+          path: /health/live
           port: 5000
         initialDelaySeconds: 3
         periodSeconds: 1
