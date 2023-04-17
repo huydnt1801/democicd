@@ -15,7 +15,7 @@ def health_readiness():
 
 @app.route('/')
 def hello_world():
-    return "Hello World 1234567890"
+    return "Chuyen de"
 
 
 if __name__ == '__main__':

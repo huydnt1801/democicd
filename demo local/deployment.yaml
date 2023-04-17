@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: my-app
-          image: tienhuy1801/my-app:v3
+          image: tienhuy1801/my-app:v5
           ports:
             - name: http
               containerPort: 5000
